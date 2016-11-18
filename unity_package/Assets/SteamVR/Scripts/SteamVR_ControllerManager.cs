@@ -22,20 +22,26 @@ public class SteamVR_ControllerManager : MonoBehaviour
 
 	void Awake()
 	{
-		// Add left and right entries to the head of the list so we only have to operate on the list itself.
-		var additional = (this.objects != null) ? this.objects.Length : 0;
-		var objects = new GameObject[2 + additional];
-		indices = new uint[2 + additional];
-		objects[0] = right;
-		indices[0] = OpenVR.k_unTrackedDeviceIndexInvalid;
-		objects[1] = left;
-		indices[1] = OpenVR.k_unTrackedDeviceIndexInvalid;
+        // Reuse `objects` list for all objects - `left` and `right` will be added to
+        // the head of the list, entries that were originally in `objects` will come after.
+		var additional = (objects != null) ? objects.Length : 0;
+
+        List<GameObject> mergedObjects = new List<GameObject>();
+        mergedObjects.Add(right);
+        mergedObjects.Add(left);
+
 		for (int i = 0; i < additional; i++)
-		{
-			objects[2 + i] = this.objects[i];
-			indices[2 + i] = OpenVR.k_unTrackedDeviceIndexInvalid;
-		}
-		this.objects = objects;
+        {
+            // `left` and `right` might be in `objects` as well, prevent adding them twice
+            if (!mergedObjects.Contains(objects[i])) mergedObjects.Add(objects[i]);
+        }
+
+        objects = mergedObjects.ToArray();
+        indices = new uint[objects.Length];
+        for (int i = 0; i < indices.Length; i++)
+        {
+            indices[i] = OpenVR.k_unTrackedDeviceIndexInvalid;
+        }
 	}
 
 	void OnEnable()
