@@ -22,26 +22,26 @@ public class SteamVR_ControllerManager : MonoBehaviour
 
 	void Awake()
 	{
-        // Reuse `objects` list for all objects - `left` and `right` will be added to
-        // the head of the list, entries that were originally in `objects` will come after.
+		// Reuse `objects` list for all objects - `left` and `right` will be added to
+		// the head of the list, entries that were originally in `objects` will come after.
 		var additional = (objects != null) ? objects.Length : 0;
 
-        List<GameObject> mergedObjects = new List<GameObject>();
-        mergedObjects.Add(right);
-        mergedObjects.Add(left);
+		List<GameObject> mergedObjects = new List<GameObject>();
+		mergedObjects.Add(right);
+		mergedObjects.Add(left);
 
 		for (int i = 0; i < additional; i++)
-        {
-            // `left` and `right` might be in `objects` as well, prevent adding them twice
-            if (!mergedObjects.Contains(objects[i])) mergedObjects.Add(objects[i]);
-        }
+		{
+			// `left` and `right` might be in `objects` as well, prevent adding them twice
+			if (!mergedObjects.Contains(objects[i])) mergedObjects.Add(objects[i]);
+		}
 
-        objects = mergedObjects.ToArray();
-        indices = new uint[objects.Length];
-        for (int i = 0; i < indices.Length; i++)
-        {
-            indices[i] = OpenVR.k_unTrackedDeviceIndexInvalid;
-        }
+		objects = mergedObjects.ToArray();
+		indices = new uint[objects.Length];
+		for (int i = 0; i < indices.Length; i++)
+		{
+			indices[i] = OpenVR.k_unTrackedDeviceIndexInvalid;
+		}
 	}
 
 	void OnEnable()
